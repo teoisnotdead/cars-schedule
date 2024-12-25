@@ -1,7 +1,11 @@
 import { generateEmailTemplate } from './emailTemplate.ts'
 import { config } from '../deps.ts'
 
-const { SENDGRID_API_KEY, SMTP_USER } = config()
+const { SENDGRID_API_KEY, SMTP_USER } = {
+  SENDGRID_API_KEY:
+    Deno.env.get('SENDGRID_API_KEY') || config().SENDGRID_API_KEY,
+  SMTP_USER: Deno.env.get('SMTP_USER') || config().SMTP_USER,
+}
 
 export async function sendEmail(
   to: string,
@@ -13,7 +17,6 @@ export async function sendEmail(
   accessCode: string,
   isCancelled: boolean = false
 ) {
-
   console.log(`Enviando correo a ${to}: ${subject}`)
   console.log(`Nombre: ${name}`)
   console.log(`Fecha: ${date}`)
