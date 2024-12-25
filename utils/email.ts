@@ -55,7 +55,11 @@ export async function sendEmail(
 
     console.log(`Correo enviado a ${to}: ${subject}`)
   } catch (error) {
-    console.error('Error enviando correo:', error.message)
+    if (error instanceof Error) {
+      console.error('Error enviando correo:', error.message)
+    } else {
+      console.error('Error desconocido:', error)
+    }
     throw new Error('No se pudo enviar el correo.')
   }
 }
