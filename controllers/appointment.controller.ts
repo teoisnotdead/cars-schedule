@@ -170,12 +170,9 @@ export const cancelAppointment = async (ctx: Context) => {
     return
   }
 
-  await appointments.updateOne(
-    { accessCode },
-    { $set: { status: 'cancelled' } }
-  )
+  await appointments.deleteOne({ accessCode })
 
-  // Cancelar una cita
+  // Enviar email de cancelación
   await sendEmail(
     appointment.user.email,
     'Cita Cancelada',
