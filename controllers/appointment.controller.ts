@@ -140,18 +140,17 @@ export const updateAppointment = async (ctx: Context) => {
     accessCode
   )
 
-  // Incluir los datos actualizados en la respuesta
   const updatedAppointment = {
     ...appointment,
-    date, // Fecha actualizada
-    time, // Hora actualizada
+    date,
+    time,
   }
 
   ctx.response.status = 200
   ctx.response.body = {
     success: true,
     message: 'Cita actualizada correctamente',
-    appointment: updatedAppointment, // Devolver el objeto actualizado
+    data: updatedAppointment,
   }
 }
 
