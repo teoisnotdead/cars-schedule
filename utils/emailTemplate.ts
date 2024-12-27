@@ -62,7 +62,7 @@ export function generateEmailTemplate(
     </head>
     <body>
       <div class="container">
-        <h1 class="header">Hola, ${name}</h1>
+        <h1 class="header">Hola ${name},</h1>
         <p>Gracias por usar nuestro servicio. ${message}</p>
         <p class="title">Código de acceso:</p>
         <div class="code-container"><strong>${accessCode}</strong></div>

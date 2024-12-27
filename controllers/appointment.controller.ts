@@ -129,7 +129,7 @@ export const updateAppointment = async (ctx: Context) => {
 
   await appointments.updateOne({ accessCode }, { $set: { date, time } })
 
-  // Actualizar una cita
+  // Enviar correo de confirmación
   await sendEmail(
     appointment.user.email,
     'Cita Actualizada',
@@ -140,10 +140,18 @@ export const updateAppointment = async (ctx: Context) => {
     accessCode
   )
 
+  // Incluir los datos actualizados en la respuesta
+  const updatedAppointment = {
+    ...appointment,
+    date, // Fecha actualizada
+    time, // Hora actualizada
+  }
+
   ctx.response.status = 200
   ctx.response.body = {
     success: true,
     message: 'Cita actualizada correctamente',
+    appointment: updatedAppointment, // Devolver el objeto actualizado
   }
 }
 
