@@ -64,7 +64,7 @@ export function generateEmailTemplate(
       <div class="container">
         <h1 class="header">Hola ${name},</h1>
         <p>Gracias por usar nuestro servicio. ${message}</p>
-        <p class="title">Código de acceso:</p>
+        <p class="title">Código de reserva:</p>
         <div class="code-container"><strong>${accessCode}</strong></div>
         <div class="details">
           <p><strong>Fecha:</strong> <span style="${dateStyle}">${date}</span></p>
@@ -72,7 +72,7 @@ export function generateEmailTemplate(
           <p>Con este código podrás actualizar o cancelar tu cita.</p>
         </div>
         <div class="footer">
-          <p>Si tienes alguna duda, por favor contáctanos.</p>
+          <p>Si tienes alguna duda, por favor contáctanos a <a href="mailto:alfredo.ssm@gmail.com">alfredo.ssm@gmail.com</a></p>
         </div>
       </div>
     </body>
