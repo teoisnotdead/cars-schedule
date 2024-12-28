@@ -1,7 +1,7 @@
-import { db } from "../config/mongo.ts"
-import { ObjectId } from "../deps.ts"
+import { db } from '../config/mongo.ts'
+import { ObjectId } from '../deps.ts'
 
-const appointments = db.collection("appointments")
+const appointments = db.collection('appointments')
 
 export interface Appointment {
   _id?: ObjectId
@@ -10,6 +10,12 @@ export interface Appointment {
     email: string
     address: string
     phone: string
+  }
+  car: {
+    patente: string
+    brand: string
+    model: string
+    year: string
   }
   date: string
   time: string

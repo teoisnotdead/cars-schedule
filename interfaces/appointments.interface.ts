@@ -5,6 +5,12 @@ interface CreateAppointmentBody {
     address: string
     phone: string
   }
+  car: {
+    patente: string
+    brand: string
+    model: string
+    year: string
+  }
   date: string
   time: string
 }

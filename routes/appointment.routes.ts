@@ -10,11 +10,11 @@ import {
 
 const router = new Router()
 
-router.get('/appointments', getAppointments) // Obtener todas las citas
-router.get('/appointments/available-hours', getAvailableHours) // Obtener horas disponibles
-router.get('/appointments/code', getAppointmentByCode) // Obtener cita por código
-router.post('/appointments', createAppointment) // Crear nueva cita
-router.put('/appointments', updateAppointment) // Actualizar una cita
-router.post('/appointments/cancel', cancelAppointment) // Cancelar una cita
+router.get('/appointments', getAppointments)
+router.get('/appointments/available-hours', getAvailableHours)
+router.get('/appointments/code', getAppointmentByCode)
+router.post('/appointments', createAppointment)
+router.put('/appointments', updateAppointment)
+router.post('/appointments/cancel', cancelAppointment)
 
 export default router

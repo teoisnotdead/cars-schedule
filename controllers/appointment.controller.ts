@@ -20,7 +20,7 @@ export const createAppointment = async (ctx: Context) => {
   const { value } = await ctx.request.body({ type: 'json' })
   const body: CreateAppointmentBody = await value
 
-  const { user, date, time } = body
+  const { user, car, date, time } = body
 
   const existingAppointment = await appointments.findOne({ date, time })
   if (existingAppointment) {
@@ -33,6 +33,7 @@ export const createAppointment = async (ctx: Context) => {
 
   const newAppointment: Appointment = {
     user,
+    car,
     date,
     time,
     status: 'pending',
