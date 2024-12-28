@@ -85,18 +85,42 @@ export const getAppointmentByCode = async (ctx: Context) => {
 
 // Obtener horas disponibles
 export const getAvailableHours = async (ctx: Context) => {
-  const date = ctx.request.url.searchParams.get('date')
+  const dateParam = ctx.request.url.searchParams.get('date')
 
-  if (!date) {
+  if (!dateParam) {
     ctx.response.status = 400
     ctx.response.body = { success: false, message: 'La fecha es requerida' }
     return
   }
 
-  const allAppointments = await appointments.find({ date }).toArray()
+  const date = new Date(dateParam)
+
+  if (isNaN(date.getTime())) {
+    ctx.response.status = 400
+    ctx.response.body = { success: false, message: 'La fecha no es válida' }
+    return
+  }
+
+  const dayOfWeek = date.getDay() // 0 = Domingo, 6 = Sábado
+
+  // Define horarios según el día de la semana
+  let allHours: string[] = []
+  if (dayOfWeek >= 1 && dayOfWeek <= 5) {
+    // Lunes a viernes: 9:00 a 18:00
+    allHours = Array.from({ length: 10 }, (_, i) => `${9 + i}:00`)
+  } else if (dayOfWeek === 6) {
+    // Sábados: 9:00 a 14:00
+    allHours = Array.from({ length: 6 }, (_, i) => `${9 + i}:00`)
+  } else {
+    // Domingos: Sin disponibilidad
+    ctx.response.status = 200
+    ctx.response.body = { success: true, data: [] }
+    return
+  }
+
+  const allAppointments = await appointments.find({ date: dateParam }).toArray()
   const bookedHours = allAppointments.map((appointment) => appointment.time)
 
-  const allHours = Array.from({ length: 9 }, (_, i) => `${10 + i}:00`)
   const availableHours = allHours.filter((hour) => !bookedHours.includes(hour))
 
   ctx.response.status = 200
