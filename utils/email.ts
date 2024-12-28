@@ -15,15 +15,9 @@ export async function sendEmail(
   time: string,
   message: string,
   accessCode: string,
-  isCancelled: boolean = false
+  isCancelled: boolean = false,
+  car: { patente: string; brand: string; model: string; year: string }
 ) {
-  console.log(`Enviando correo a ${to}: ${subject}`)
-  console.log(`Nombre: ${name}`)
-  console.log(`Fecha: ${date}`)
-  console.log(`Hora: ${time}`)
-  console.log(`Mensaje: ${message}`)
-  console.log(`Código de acceso: ${accessCode}`)
-  console.log(`Cancelado: ${isCancelled}`)
   try {
     const htmlContent = generateEmailTemplate(
       name,
@@ -31,7 +25,8 @@ export async function sendEmail(
       time,
       message,
       accessCode,
-      isCancelled
+      isCancelled,
+      car
     )
 
     const response = await fetch('https://api.sendgrid.com/v3/mail/send', {

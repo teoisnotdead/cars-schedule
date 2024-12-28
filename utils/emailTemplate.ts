@@ -4,10 +4,15 @@ export function generateEmailTemplate(
   time: string,
   message: string,
   accessCode: string,
-  isCancelled: boolean = false
+  isCancelled: boolean = false,
+  car: { patente: string; brand: string; model: string; year: string }
 ): string {
-  const dateStyle = isCancelled ? "text-decoration: line-through; color: red;" : "";
-  const timeStyle = isCancelled ? "text-decoration: line-through; color: red;" : "";
+  const dateStyle = isCancelled
+    ? 'text-decoration: line-through; color: red;'
+    : ''
+  const timeStyle = isCancelled
+    ? 'text-decoration: line-through; color: red;'
+    : ''
 
   return `
   <!DOCTYPE html>
@@ -69,6 +74,13 @@ export function generateEmailTemplate(
         <div class="details">
           <p><strong>Fecha:</strong> <span style="${dateStyle}">${date}</span></p>
           <p><strong>Hora:</strong> <span style="${timeStyle}">${time}</span></p>
+          <p><strong>Detalles del vehículo:</strong></p>
+          <ul>
+            <li><strong>Patente:</strong> ${car.patente}</li>
+            <li><strong>Marca:</strong> ${car.brand}</li>
+            <li><strong>Modelo:</strong> ${car.model}</li>
+            <li><strong>Año:</strong> ${car.year}</li>
+          </ul>
           <p>Con este código podrás actualizar o cancelar tu cita.</p>
         </div>
         <div class="footer">
@@ -77,5 +89,5 @@ export function generateEmailTemplate(
       </div>
     </body>
   </html>
-  `;
+  `
 }

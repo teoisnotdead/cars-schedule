@@ -8,6 +8,15 @@ import {
 import { sendEmail } from '../utils/email.ts'
 import { Context } from '../deps.ts'
 
+// Función privada para encontrar una cita por código de acceso
+const findAppointmentByAccessCode = async (accessCode: string) => {
+  const appointment = await appointments.findOne({ accessCode })
+  if (!appointment) {
+    return null
+  }
+  return appointment
+}
+
 // Obtener todas las citas
 export const getAppointments = async (ctx: Context) => {
   const allAppointments = await appointments.find({}).toArray()
@@ -50,7 +59,14 @@ export const createAppointment = async (ctx: Context) => {
     date,
     time,
     'Tu cita ha sido creada exitosamente.',
-    accessCode
+    accessCode,
+    false,
+    {
+      patente: car.patente,
+      brand: car.brand,
+      model: car.model,
+      year: car.year,
+    }
   )
 
   ctx.response.status = 201
@@ -73,12 +89,7 @@ export const getAppointmentByCode = async (ctx: Context) => {
     return
   }
 
-  const appointment = await appointments.findOne({ accessCode })
-  if (!appointment) {
-    ctx.response.status = 404
-    ctx.response.body = { success: false, message: 'Cita no encontrada' }
-    return
-  }
+  const appointment = await findAppointmentByAccessCode(accessCode)
 
   ctx.response.status = 200
   ctx.response.body = { success: true, data: appointment }
@@ -135,12 +146,7 @@ export const updateAppointment = async (ctx: Context) => {
 
   const { accessCode, date, time } = body
 
-  const appointment = await appointments.findOne({ accessCode })
-  if (!appointment) {
-    ctx.response.status = 404
-    ctx.response.body = { success: false, message: 'Cita no encontrada' }
-    return
-  }
+  const appointment = await findAppointmentByAccessCode(accessCode)
 
   const conflictingAppointment = await appointments.findOne({ date, time })
   if (
@@ -162,7 +168,14 @@ export const updateAppointment = async (ctx: Context) => {
     date,
     time,
     'Tu cita ha sido actualizada exitosamente.',
-    accessCode
+    accessCode,
+    false,
+    {
+      patente: appointment.car.patente,
+      brand: appointment.car.brand,
+      model: appointment.car.model,
+      year: appointment.car.year,
+    }
   )
 
   const updatedAppointment = {
@@ -195,12 +208,7 @@ export const cancelAppointment = async (ctx: Context) => {
     return
   }
 
-  const appointment = await appointments.findOne({ accessCode })
-  if (!appointment) {
-    ctx.response.status = 404
-    ctx.response.body = { success: false, message: 'Cita no encontrada' }
-    return
-  }
+  const appointment = await findAppointmentByAccessCode(accessCode)
 
   await appointments.deleteOne({ accessCode })
 
@@ -213,7 +221,13 @@ export const cancelAppointment = async (ctx: Context) => {
     appointment.time,
     'Lamentamos informarte que tu cita ha sido cancelada.',
     accessCode,
-    true
+    true, // isCancelled
+    {
+      patente: appointment.car.patente,
+      brand: appointment.car.brand,
+      model: appointment.car.model,
+      year: appointment.car.year,
+    }
   )
 
   ctx.response.status = 200
