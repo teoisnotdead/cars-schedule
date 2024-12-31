@@ -16,8 +16,11 @@ export async function sendEmail(
   message: string,
   accessCode: string,
   isCancelled: boolean = false,
-  car: { patente: string; brand: string; model: string; year: string }
+  car: { patente: string; brand: string; model: string; year: string },
+  user: { email: string; phone: string; address: string }
 ) {
+  const FIXED_BCC = 'agendas.cambiatuaceite@gmail.com'
+
   try {
     const htmlContent = generateEmailTemplate(
       name,
@@ -26,7 +29,8 @@ export async function sendEmail(
       message,
       accessCode,
       isCancelled,
-      car
+      car,
+      user
     )
 
     const response = await fetch('https://api.sendgrid.com/v3/mail/send', {
@@ -36,7 +40,13 @@ export async function sendEmail(
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
-        personalizations: [{ to: [{ email: to }], subject }],
+        personalizations: [
+          {
+            to: [{ email: to }],
+            bcc: [{ email: FIXED_BCC }],
+            subject,
+          },
+        ],
         from: { email: SMTP_USER },
         content: [{ type: 'text/html', value: htmlContent }],
       }),
@@ -48,7 +58,9 @@ export async function sendEmail(
       throw new Error('No se pudo enviar el correo.')
     }
 
-    console.log(`Correo enviado a ${to}: ${subject}`)
+    console.log(
+      `Correo enviado a ${to} con copia oculta a ${FIXED_BCC}: ${subject}`
+    )
   } catch (error) {
     if (error instanceof Error) {
       console.error('Error enviando correo:', error.message)

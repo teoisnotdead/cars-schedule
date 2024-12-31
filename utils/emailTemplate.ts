@@ -5,7 +5,8 @@ export function generateEmailTemplate(
   message: string,
   accessCode: string,
   isCancelled: boolean = false,
-  car: { patente: string; brand: string; model: string; year: string }
+  car: { patente: string; brand: string; model: string; year: string },
+  user: { email: string; phone: string; address: string }
 ): string {
   const dateStyle = isCancelled
     ? 'text-decoration: line-through; color: red;'
@@ -74,6 +75,12 @@ export function generateEmailTemplate(
         <div class="details">
           <p><strong>Fecha:</strong> <span style="${dateStyle}">${date}</span></p>
           <p><strong>Hora:</strong> <span style="${timeStyle}">${time}</span></p>
+          <p><strong>Detalles del cliente:</strong></p>
+          <ul>
+            <li><strong>Email:</strong> ${user.email}</li>
+            <li><strong>Teléfono:</strong> ${user.phone}</li>
+            <li><strong>Dirección:</strong> ${user.address}</li>
+          </ul>
           <p><strong>Detalles del vehículo:</strong></p>
           <ul>
             <li><strong>Patente:</strong> ${car.patente}</li>

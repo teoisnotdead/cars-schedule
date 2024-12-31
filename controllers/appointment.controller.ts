@@ -66,7 +66,8 @@ export const createAppointment = async (ctx: Context) => {
       brand: car.brand,
       model: car.model,
       year: car.year,
-    }
+    },
+    user
   )
 
   ctx.response.status = 201
@@ -165,19 +166,24 @@ export const updateAppointment = async (ctx: Context) => {
 
   // Enviar correo de confirmación
   await sendEmail(
-    appointment.user.email,
+    appointment?.user.email,
     'Cita Actualizada',
-    appointment.user.name,
+    appointment?.user.name,
     date,
     time,
     'Tu cita ha sido actualizada exitosamente.',
     accessCode,
     false,
     {
-      patente: appointment.car.patente,
-      brand: appointment.car.brand,
-      model: appointment.car.model,
-      year: appointment.car.year,
+      patente: appointment?.car.patente,
+      brand: appointment?.car.brand,
+      model: appointment?.car.model,
+      year: appointment?.car.year,
+    },
+    {
+      email: appointment?.user.email,
+      phone: appointment?.user.phone,
+      address: appointment?.user.address,
     }
   )
 
@@ -217,19 +223,24 @@ export const cancelAppointment = async (ctx: Context) => {
 
   // Enviar email de cancelación
   await sendEmail(
-    appointment.user.email,
+    appointment?.user.email,
     'Cita Cancelada',
-    appointment.user.name,
-    appointment.date,
-    appointment.time,
+    appointment?.user.name,
+    appointment?.date,
+    appointment?.time,
     'Lamentamos informarte que tu cita ha sido cancelada.',
     accessCode,
-    true, // isCancelled
+    true,
     {
-      patente: appointment.car.patente,
-      brand: appointment.car.brand,
-      model: appointment.car.model,
-      year: appointment.car.year,
+      patente: appointment?.car.patente,
+      brand: appointment?.car.brand,
+      model: appointment?.car.model,
+      year: appointment?.car.year,
+    },
+    {
+      email: appointment?.user.email,
+      phone: appointment?.user.phone,
+      address: appointment?.user.address,
     }
   )
 
