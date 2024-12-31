@@ -84,7 +84,7 @@ export function generateEmailTemplate(
           <p>Con este código podrás actualizar o cancelar tu cita.</p>
         </div>
         <div class="footer">
-          <p>Si tienes alguna duda, por favor contáctanos a <a href="mailto:alfredo.ssm@gmail.com">alfredo.ssm@gmail.com</a></p>
+          <p>Si tienes alguna duda, por favor contáctanos a <a href="mailto:contacto@cambiatuaceite.cl">contacto@cambiatuaceite.cl</a> o al WhatsApp +56 9 5192 2979</p>
         </div>
       </div>
     </body>

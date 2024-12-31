@@ -105,15 +105,18 @@ export const getAvailableHours = async (ctx: Context) => {
     return
   }
 
-  const date = new Date(dateParam)
-
-  if (isNaN(date.getTime())) {
+  // Convierte la fecha enviada (UTC) a la zona horaria local
+  const utcDate = new Date(dateParam)
+  if (isNaN(utcDate.getTime())) {
     ctx.response.status = 400
     ctx.response.body = { success: false, message: 'La fecha no es válida' }
     return
   }
 
-  const dayOfWeek = date.getDay() // 0 = Domingo, 6 = Sábado
+  const localDate = new Date(
+    utcDate.getTime() + utcDate.getTimezoneOffset() * 60000
+  )
+  const dayOfWeek = localDate.getUTCDay() // Calcula el día basado en la fecha local
 
   // Define horarios según el día de la semana
   let allHours: string[] = []
