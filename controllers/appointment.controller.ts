@@ -8,6 +8,8 @@ import {
 import { sendEmail } from '../utils/email.ts'
 import { Context } from '../deps.ts'
 
+const shortAccessCode = (accessCode: string) => accessCode.split('-')[0]
+
 // Función privada para encontrar una cita por código de acceso
 const findAppointmentByAccessCode = async (accessCode: string) => {
   const appointment = await appointments.findOne({ accessCode })
@@ -22,59 +24,6 @@ export const getAppointments = async (ctx: Context) => {
   const allAppointments = await appointments.find({}).toArray()
   ctx.response.status = 200
   ctx.response.body = { success: true, data: allAppointments }
-}
-
-// Crear una nueva cita
-export const createAppointment = async (ctx: Context) => {
-  const { value } = await ctx.request.body({ type: 'json' })
-  const body: CreateAppointmentBody = await value
-
-  const { user, car, date, time } = body
-
-  const existingAppointment = await appointments.findOne({ date, time })
-  if (existingAppointment) {
-    ctx.response.status = 409
-    ctx.response.body = { success: false, message: 'La hora ya está reservada' }
-    return
-  }
-
-  const accessCode = crypto.randomUUID()
-
-  const newAppointment: Appointment = {
-    user,
-    car,
-    date,
-    time,
-    status: 'pending',
-    accessCode,
-  }
-
-  const insertedId = await appointments.insertOne(newAppointment)
-
-  // Crea cita
-  await sendEmail(
-    user.email,
-    'Cita Creada',
-    user.name,
-    date,
-    time,
-    'Tu cita ha sido creada exitosamente.',
-    accessCode,
-    false,
-    {
-      patente: car.patente,
-      brand: car.brand,
-      model: car.model,
-      year: car.year,
-    },
-    user
-  )
-
-  ctx.response.status = 201
-  ctx.response.body = {
-    success: true,
-    data: { ...newAppointment, _id: insertedId },
-  }
 }
 
 // Obtener una cita por su código de acceso
@@ -141,6 +90,59 @@ export const getAvailableHours = async (ctx: Context) => {
 
   ctx.response.status = 200
   ctx.response.body = { success: true, data: availableHours }
+}
+
+// Crear una nueva cita
+export const createAppointment = async (ctx: Context) => {
+  const { value } = await ctx.request.body({ type: 'json' })
+  const body: CreateAppointmentBody = await value
+
+  const { user, car, date, time } = body
+
+  const existingAppointment = await appointments.findOne({ date, time })
+  if (existingAppointment) {
+    ctx.response.status = 409
+    ctx.response.body = { success: false, message: 'La hora ya está reservada' }
+    return
+  }
+
+  const accessCode = shortAccessCode(crypto.randomUUID())
+
+  const newAppointment: Appointment = {
+    user,
+    car,
+    date,
+    time,
+    status: 'pending',
+    accessCode,
+  }
+
+  const insertedId = await appointments.insertOne(newAppointment)
+
+  // Crea cita
+  await sendEmail(
+    user.email,
+    'Cita Creada',
+    user.name,
+    date,
+    time,
+    'Tu cita ha sido creada exitosamente.',
+    accessCode,
+    false,
+    {
+      patente: car.patente,
+      brand: car.brand,
+      model: car.model,
+      year: car.year,
+    },
+    user
+  )
+
+  ctx.response.status = 201
+  ctx.response.body = {
+    success: true,
+    data: { ...newAppointment, _id: insertedId },
+  }
 }
 
 // Actualizar una cita por código de acceso
